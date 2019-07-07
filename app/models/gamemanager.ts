@@ -3,6 +3,7 @@ import Game from "./game";
 import Player from "./player";
 import GameAlreadyExistsException from "../exceptions/GameAlreadyExistsException";
 import GameNotFoundException from "../exceptions/GameNotFoundException";
+import PlayerSubmission from './playersubmission';
 
 class GameManager {
     lobbyMessagePart1 = 'A game has been created in this text channel! To join, type !joingame. \n\nCurrent Players:';
@@ -21,6 +22,7 @@ class GameManager {
 
         // Create the game
         var game = new Game(id);
+        game.channel = message.channel as discordjs.TextChannel;
         this.games.push(game);
 
         // Join the current player into the game
@@ -81,6 +83,24 @@ class GameManager {
                 this.UpdateGameLobbyMessage(game, this.GetUpdatedGameLobbyPlayersMessage(game));
             }
         }
+    }
+
+    StartGame(gameId: string) {
+        // Check if the game exists
+        var game = this.games.find(function(game) { return game.id === gameId; });
+        if (game === undefined)
+            throw new GameNotFoundException(`A game with id ${gameId} was not found`);
+
+        game.Start();
+    }
+
+    Submit(gameId: string, user: discordjs.User, caption: string) {
+        // Check if the game exists
+        var game = this.games.find(function(game) { return game.id === gameId; });
+        if (game === undefined)
+            throw new GameNotFoundException(`A game with id ${gameId} was not found`);
+
+        game.Submit(new PlayerSubmission(user.id, user.username, caption));
     }
 
     private UpdateGameLobbyMessage(game: Game, message: string) {

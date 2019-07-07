@@ -31,7 +31,7 @@ function JoinGame(message: discordjs.Message) {
             message.reply('A game has not been created in this channel yet. Type !creategame to create one and join!');
         } else {
             message.reply('Something went wrong, please try again');
-            console.log(`Exception in app.CreateGame(): ${e}`);
+            console.log(`Exception in app.JoinGame(): ${e}`);
         }
     }
 }
@@ -44,7 +44,34 @@ function LeaveGame(message: discordjs.Message) {
             message.reply('A game has not been created in this channel yet. Type !creategame to create one and join!');
         } else {
             message.reply('Something went wrong, please try again');
-            console.log(`Exception in app.CreateGame(): ${e}`);
+            console.log(`Exception in app.LeaveGame(): ${e}`);
+        }
+    }
+}
+
+function StartGame(message: discordjs.Message) {
+    try {
+        gameManager.StartGame(message.channel.id);
+    } catch (e) {
+        if (e instanceof GameNotFoundException) {
+            message.reply('A game has not been created in this channel yet. Type !creategame to create one and join!');
+        } else {
+            message.reply('Something went wrong, please try again');
+            console.log(`Exception in app.StartGame(): ${e}`);
+        }
+    }
+}
+
+function Submit(message: discordjs.Message) {
+    try {
+        var caption = message.content.replace(`${messagePrefix}submit `, '');
+        gameManager.Submit(message.channel.id, message.author, caption);
+    } catch (e) {
+        if (e instanceof GameNotFoundException) {
+            message.reply('A game has not been created in this channel yet. Type !creategame to create one and join!');
+        } else {
+            message.reply('Something went wrong, please try again');
+            console.log(`Exception in app.Submit(): ${e}`);
         }
     }
 }
@@ -61,24 +88,28 @@ client.on('message', (message) => {
     switch(message.content) {
         case `${messagePrefix}ping`:
             message.reply('pong');
-            break;
+            return;
         case `${messagePrefix}creategame`:
             CreateGame(message);
-            break;
+            return;
         case `${messagePrefix}joingame`:
             JoinGame(message);
-            break;
+            return;
         case `${messagePrefix}leavegame`:
             LeaveGame(message);
-            break;
+            return;
         case `${messagePrefix}endgame`:
             CloseGame(message);
-            break;
+            return;
         case `${messagePrefix}startgame`:
-            break;
-        
+            StartGame(message);
+            return;
     }
     
+    // Can't check startsWith in switch :(
+    if (message.content.startsWith(`${messagePrefix}submit `)) {
+        Submit(message);
+    }
 });
 
 client.login(process.env.BOT_TOKEN);
