@@ -1,0 +1,29 @@
+{
+  "name": "discordwdym",
+  "version": "1.0.0",
+  "description": "What Do You Meme Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "ts-node-dev --respawn --transpileOnly ./app/app.ts",
+    "prod": "tsc && node ./build/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DasonMixon/DiscordWDYM.git"
+  },
+  "author": "Mason Dixon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DasonMixon/DiscordWDYM/issues"
+  },
+  "homepage": "https://github.com/DasonMixon/DiscordWDYM#readme",
+  "dependencies": {
+    "@types/dotenv": "^6.1.1",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0",
+    "ts-node-dev": "^1.0.0-pre.40",
+    "typescript": "^3.5.2"
+  }
+}
